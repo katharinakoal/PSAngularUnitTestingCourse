@@ -1,39 +1,41 @@
-import { HeroesComponent } from './heroes.component';
-import { of } from 'rxjs';
+import { HeroesComponent } from "./heroes.component";
+import { of } from "rxjs";
 
 describe('HeroesComponent', () => {
   let component: HeroesComponent;
-  let mockHeroes;
+  let HEROES;
   let mockHeroService;
 
-  beforeAll(() => {
-    mockHeroes = [
-      { id: 1, name: 'spiderman', strength: 8 },
-      { id: 2, name: 'batman', strength: 24 },
-      { id: 3, name: 'superman', strength: 99 }
-    ];
-    mockHeroService = jasmine.createSpyObj(['getHeroes', 'addHero', 'deleteHero']);
+  beforeEach(() => {
+    HEROES = [
+      {id:1, name: 'SpiderDude', strength: 8},
+      {id:2, name: 'Wonderful Woman', strength: 24},
+      {id:3, name: 'SuperDude', strength: 55}
+    ]
+
+    mockHeroService = jasmine.createSpyObj(['getHeroes', 'addHero', 'deleteHero'])
+
     component = new HeroesComponent(mockHeroService);
-  });
+  })
 
   describe('delete', () => {
-    it('should delete the indicated hero from heroes list', () => {
-      mockHeroService.deleteHero.and.returnValue(of(true)); // let mockHeroService return an observable
-      component.heroes = mockHeroes;
-      const heroToDelete = mockHeroes[1];
 
-      component.delete(heroToDelete);
+    it('should remove the indicated hero from the heroes list', () => {
+      mockHeroService.deleteHero.and.returnValue(of(true))
+      component.heroes = HEROES;
 
-      expect(component.heroes.filter(hero => hero.id === heroToDelete.id)).toEqual([]);
-    });
-    it('should call deleteHero() with indicated hero', () => {
-      mockHeroService.deleteHero.and.returnValue(of(true)); // let mockHeroService return an observable
-      component.heroes = mockHeroes;
-      const heroToDelete = mockHeroes[2];
+      component.delete(HEROES[2]);
 
-      component.delete(heroToDelete);
+      expect(component.heroes.length).toBe(2);
+    })
 
-      expect(mockHeroService.deleteHero).toHaveBeenCalledWith(heroToDelete);
-    });
-  });
-});
+    it('should call deleteHero', () => {
+      mockHeroService.deleteHero.and.returnValue(of(true))
+      component.heroes = HEROES;
+
+      component.delete(HEROES[2]);
+
+      expect(mockHeroService.deleteHero).toHaveBeenCalledWith(HEROES[2]);
+    })
+  })
+})
